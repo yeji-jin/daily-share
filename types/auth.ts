@@ -8,3 +8,10 @@ export const signUpSchema = z.object({
 });
 
 export type SignUpValues = z.infer<typeof signUpSchema>;
+
+export const loginSchema = z.object({
+  email: emailSchema,
+  password: z.string().min(1, "비밀번호를 입력해주세요."),
+});
+
+export type LoginValues = z.infer<typeof loginSchema>;

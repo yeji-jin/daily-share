@@ -23,7 +23,7 @@ daily-share/
 ├── app/
 │   ├── (auth)/                    # 인증 관련 라우트 그룹 (레이아웃 분리, 헤더 없음)
 │   │   ├── layout.tsx
-│   │   ├── login/
+│   │   ├── signin/                # 이메일/비밀번호 + GitHub OAuth 로그인
 │   │   ├── signup/                # React Hook Form + Zod 연동 예시
 │   │   ├── forgot-password/
 │   │   └── reset-password/
@@ -46,10 +46,13 @@ daily-share/
 │
 ├── hooks/
 │   └── mutations/                 # TanStack Query mutation 훅
+│       ├── use-sign-in.ts
+│       ├── use-sign-in-with-oauth.ts
 │       └── use-sign-up.ts
 │
 ├── lib/
-│   ├── auth.ts                    # Supabase Auth 관련 함수 (signUp 등)
+│   ├── auth.ts                    # Supabase Auth 관련 함수 (signUp, signInWithPassword 등)
+│   ├── error.ts                   # 에러 메시지 매핑 + showErrorToast 헬퍼
 │   ├── site.ts                    # 사이트 메타 정보 (이름/설명/URL)
 │   ├── utils.ts
 │   └── supabase/
@@ -63,6 +66,7 @@ daily-share/
 ├── types/
 │   ├── database.types.ts          # Supabase 자동생성 타입 (직접 수정 X, `npm run type-gen`으로 갱신)
 │   ├── auth.ts                    # 인증 관련 zod 스키마 + 타입
+│   ├── mutations.ts               # 공용 mutation 콜백(onSuccess/onError 등) 타입
 │   └── post.ts                    # Post 도메인 타입
 │
 └── public/
