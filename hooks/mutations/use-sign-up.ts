@@ -8,5 +8,8 @@ export function useSignUp(callbacks?: UseMutationCallback) {
     onError: (error) => {
       if (callbacks?.onError) callbacks.onError(error);
     },
+    onSuccess: () => {
+      if (callbacks?.onSuccess) callbacks.onSuccess();
+    },
   });
 }

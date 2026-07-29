@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -19,12 +20,17 @@ import { signUpSchema, type SignUpValues } from "@/types/auth";
 import { showErrorToast } from "@/lib/error";
 
 export default function SignupPage() {
+  const router = useRouter();
   const form = useForm<SignUpValues>({
     resolver: zodResolver(signUpSchema),
     defaultValues: { email: "", password: "" },
   });
   const { mutate: signUp, isPending: isSignUpPending } = useSignUp({
     onError: showErrorToast,
+    onSuccess: () => {
+      router.push("/");
+      router.refresh();
+    },
   });
 
   const onSubmit = (values: SignUpValues) => {
