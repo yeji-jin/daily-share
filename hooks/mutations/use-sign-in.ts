@@ -9,5 +9,8 @@ export function useSignIn(callbacks?: UseMutationCallback) {
       console.log(error);
       if (callbacks?.onError) callbacks.onError(error);
     },
+    onSuccess: () => {
+      if (callbacks?.onSuccess) callbacks.onSuccess();
+    },
   });
 }

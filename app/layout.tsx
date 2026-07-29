@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Header } from "@/components/layout/header";
 import { siteConfig } from "@/lib/site";
+import SessionProvider from "@/providers/SessionProvider";
+import { createClient } from "@/lib/supabase/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -43,11 +45,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await createClient();
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
   return (
     <html
       lang="ko"
@@ -61,13 +68,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>
-            <Header />
-            <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col border-r border-l px-4 py-6">
-              {children}
-            </main>
-            <Toaster />
-          </QueryProvider>
+          <SessionProvider initialSession={session}>
+            <QueryProvider>
+              <Header session={session} />
+              <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col border-r border-l px-4 py-6">
+                {children}
+              </main>
+              <Toaster />
+            </QueryProvider>
+          </SessionProvider>
         </ThemeProvider>
       </body>
     </html>

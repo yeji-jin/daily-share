@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -19,6 +20,7 @@ import { useSignInWithOAuth } from "@/hooks/mutations/use-sign-in-with-oauth";
 import { showErrorToast } from "@/lib/error";
 
 export default function SignInPage() {
+  const router = useRouter();
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
@@ -26,6 +28,10 @@ export default function SignInPage() {
 
   const { mutate: signIn, isPending: isSignInWithPasswordPending } = useSignIn({
     onError: showErrorToast,
+    onSuccess: () => {
+      router.push("/");
+      router.refresh();
+    },
   });
   const { mutate: signInWithOAuth, isPending: isSignInWithOAuthPending } = useSignInWithOAuth({
     onError: showErrorToast,

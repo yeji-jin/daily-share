@@ -20,19 +20,21 @@ Share your daily moments with a modern social platform.
 
 ```
 daily-share/
+├── middleware.ts                  # 세션 쿠키 갱신 + 라우트 가드 (로그인/비로그인 접근 제어)
+│
 ├── app/
-│   ├── (auth)/                    # 인증 관련 라우트 그룹 (레이아웃 분리, 헤더 없음)
+│   ├── (guest)/                   # 비로그인 상태에서만 접근 가능
 │   │   ├── layout.tsx
 │   │   ├── signin/                # 이메일/비밀번호 + GitHub OAuth 로그인
 │   │   ├── signup/                # React Hook Form + Zod 연동 예시
-│   │   ├── forgot-password/
-│   │   └── reset-password/
-│   ├── post/[id]/                 # 게시글 상세 (/post/{id})
-│   ├── user/[id]/                 # 사용자 프로필 (/user/{id})
-│   ├── settings/                  # 설정 (/settings)
-│   ├── search/                    # 검색 (/search)
-│   ├── page.tsx                   # 홈 피드 (/)
-│   ├── layout.tsx                 # 루트 레이아웃 (Header, Provider 연결)
+│   │   └── forgot-password/
+│   ├── (auth)/                    # 로그인 상태에서만 접근 가능
+│   │   ├── page.tsx               # 홈 피드 (/)
+│   │   ├── post/[id]/             # 게시글 상세 (/post/{id})
+│   │   ├── profile/[id]/          # 사용자 프로필 (/profile/{id})
+│   │   ├── settings/              # 설정 (/settings)
+│   │   └── reset-password/        # 비밀번호 재설정 (재설정 링크로 인증된 세션에서 접근)
+│   ├── layout.tsx                 # 루트 레이아웃 (서버에서 세션 조회, Header/Provider 연결)
 │   ├── not-found.tsx              # 404 페이지
 │   ├── robots.ts                  # robots.txt 생성
 │   ├── sitemap.ts                 # sitemap.xml 생성
@@ -40,7 +42,7 @@ daily-share/
 │
 ├── components/
 │   ├── layout/                    # 헤더, 테마 토글 등 레이아웃 컴포넌트
-│   │   ├── header.tsx
+│   │   ├── header.tsx             # 서버에서 받은 session prop으로 로그인/비로그인 UI 분기
 │   │   └── theme-toggle.tsx
 │   └── ui/                        # shadcn/ui 컴포넌트
 │
@@ -57,11 +59,16 @@ daily-share/
 │   ├── utils.ts
 │   └── supabase/
 │       ├── client.ts              # 브라우저용 Supabase 클라이언트
-│       └── server.ts              # 서버용 Supabase 클라이언트
+│       ├── server.ts              # 서버용 Supabase 클라이언트
+│       └── middleware.ts          # 세션 쿠키 갱신 + 라우트 가드 로직 (middleware.ts에서 사용)
 │
 ├── providers/
 │   ├── query-provider.tsx         # TanStack Query Provider
-│   └── theme-provider.tsx         # next-themes Provider
+│   ├── theme-provider.tsx         # next-themes Provider
+│   └── SessionProvider.tsx        # 서버에서 받은 초기 세션을 zustand 스토어에 시드 + 실시간 구독
+│
+├── stores/
+│   └── session.ts                 # 세션 zustand 스토어 (useSession, useIsSessionLoaded)
 │
 ├── types/
 │   ├── database.types.ts          # Supabase 자동생성 타입 (직접 수정 X, `npm run type-gen`으로 갱신)
