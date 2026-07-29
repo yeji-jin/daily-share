@@ -52,8 +52,8 @@ export default async function RootLayout({
 }>) {
   const supabase = await createClient();
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <html
@@ -68,9 +68,9 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <SessionProvider initialSession={session}>
+          <SessionProvider initialUser={user}>
             <QueryProvider>
-              <Header session={session} />
+              <Header user={user} />
               <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col border-r border-l px-4 py-6">
                 {children}
               </main>

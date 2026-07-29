@@ -1,31 +1,31 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import type { User } from "@supabase/supabase-js";
 import { createClient } from "@/lib/supabase/client";
-import { useSetSession } from "@/stores/session";
+import { useSetUser } from "@/stores/session";
 
 export default function SessionProvider({
   children,
-  initialSession,
+  initialUser,
 }: {
   children: React.ReactNode;
-  initialSession: Session | null;
+  initialUser: User | null;
 }) {
   const [supabase] = useState(() => createClient());
-  const setSession = useSetSession();
+  const setUser = useSetUser();
 
   useEffect(() => {
-    setSession(initialSession);
+    setUser(initialUser);
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+      setUser(session?.user ?? null);
     });
 
     return () => subscription.unsubscribe();
-  }, [setSession, supabase]);
+  }, [setUser, supabase]);
 
   return <>{children}</>;
 }

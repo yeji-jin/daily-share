@@ -1,22 +1,22 @@
-import { Session } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import { create } from "zustand";
 import { combine, devtools } from "zustand/middleware";
 
 type State = {
   isLoaded: boolean;
-  session: Session | null;
+  user: User | null;
 };
 const initialState = {
   isLoaded: false,
-  session: null,
+  user: null,
 } as State;
 
 const useSessionStore = create(
   devtools(
     combine(initialState, (set) => ({
       actions: {
-        setSession: (session: Session | null) => {
-          set({ session, isLoaded: true }, false, "setSession");
+        setUser: (user: User | null) => {
+          set({ user, isLoaded: true }, false, "setUser");
         },
       },
     })),
@@ -26,17 +26,17 @@ const useSessionStore = create(
   ),
 );
 
-export const useSession = () => {
-  const session = useSessionStore((store) => store.session);
-  return session;
+export const useUser = () => {
+  const user = useSessionStore((store) => store.user);
+  return user;
 };
 
-export const useIsSessionLoaded = () => {
-  const IsSessionLoaded = useSessionStore((store) => store.isLoaded);
-  return IsSessionLoaded;
+export const useIsUserLoaded = () => {
+  const isUserLoaded = useSessionStore((store) => store.isLoaded);
+  return isUserLoaded;
 };
 
-export const useSetSession = () => {
-  const setSession = useSessionStore((store) => store.actions.setSession);
-  return setSession;
+export const useSetUser = () => {
+  const setUser = useSessionStore((store) => store.actions.setUser);
+  return setUser;
 };

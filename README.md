@@ -25,16 +25,18 @@ daily-share/
 ├── app/
 │   ├── (guest)/                   # 비로그인 상태에서만 접근 가능
 │   │   ├── layout.tsx
-│   │   ├── signin/                # 이메일/비밀번호 + GitHub OAuth 로그인
+│   │   ├── signin/                # 이메일/비밀번호 + GitHub OAuth 로그인, ?reset=success 안내 토스트
 │   │   ├── signup/                # React Hook Form + Zod 연동 예시
-│   │   └── forgot-password/
+│   │   └── forgot-password/       # 비밀번호 재설정 이메일 요청
 │   ├── (auth)/                    # 로그인 상태에서만 접근 가능
 │   │   ├── page.tsx               # 홈 피드 (/)
 │   │   ├── post/[id]/             # 게시글 상세 (/post/{id})
 │   │   ├── profile/[id]/          # 사용자 프로필 (/profile/{id})
 │   │   ├── settings/              # 설정 (/settings)
 │   │   └── reset-password/        # 비밀번호 재설정 (재설정 링크로 인증된 세션에서 접근)
-│   ├── layout.tsx                 # 루트 레이아웃 (서버에서 세션 조회, Header/Provider 연결)
+│   ├── auth/
+│   │   └── confirm/route.ts       # Supabase 재설정 링크의 code를 세션으로 교환하는 콜백
+│   ├── layout.tsx                 # 루트 레이아웃 (서버에서 getUser() 조회, Header/Provider 연결)
 │   ├── not-found.tsx              # 404 페이지
 │   ├── robots.ts                  # robots.txt 생성
 │   ├── sitemap.ts                 # sitemap.xml 생성
@@ -50,10 +52,13 @@ daily-share/
 │   └── mutations/                 # TanStack Query mutation 훅
 │       ├── use-sign-in.ts
 │       ├── use-sign-in-with-oauth.ts
-│       └── use-sign-up.ts
+│       ├── use-sign-up.ts
+│       ├── use-request-password-reset-email.ts
+│       └── use-update-password.ts
 │
 ├── lib/
-│   ├── auth.ts                    # Supabase Auth 관련 함수 (signUp, signInWithPassword 등)
+│   ├── auth.ts                    # Supabase Auth 함수 (signUp, signInWithPassword, signInWithOAuth,
+│   │                               #   requestPasswordResetEmail, updatePassword, signOut)
 │   ├── error.ts                   # 에러 메시지 매핑 + showErrorToast 헬퍼
 │   ├── site.ts                    # 사이트 메타 정보 (이름/설명/URL)
 │   ├── utils.ts
@@ -65,14 +70,15 @@ daily-share/
 ├── providers/
 │   ├── query-provider.tsx         # TanStack Query Provider
 │   ├── theme-provider.tsx         # next-themes Provider
-│   └── SessionProvider.tsx        # 서버에서 받은 초기 세션을 zustand 스토어에 시드 + 실시간 구독
+│   └── SessionProvider.tsx        # 서버에서 받은 초기 user를 zustand 스토어에 시드 + 실시간 구독
 │
 ├── stores/
-│   └── session.ts                 # 세션 zustand 스토어 (useSession, useIsSessionLoaded)
+│   └── session.ts                 # 유저 zustand 스토어 (useUser, useIsUserLoaded, useSetUser)
 │
 ├── types/
 │   ├── database.types.ts          # Supabase 자동생성 타입 (직접 수정 X, `npm run type-gen`으로 갱신)
-│   ├── auth.ts                    # 인증 관련 zod 스키마 + 타입
+│   ├── auth.ts                    # 인증 관련 zod 스키마 + 타입 (emailSchema, passwordSchema,
+│   │                               #   signUpSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema)
 │   ├── mutations.ts               # 공용 mutation 콜백(onSuccess/onError 등) 타입
 │   └── post.ts                    # Post 도메인 타입
 │
