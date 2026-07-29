@@ -9,7 +9,7 @@
     "lint": "eslint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "type-gen": "supabase gen types typescript --linked > types/database.types.ts"
+    "type-gen": "npx supabase gen types typescript --linked > types/database.types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",
@@ -42,6 +42,7 @@
     "prettier": "^3.9.5",
     "prettier-plugin-tailwindcss": "^0.8.1",
     "shadcn": "^4.13.0",
+    "supabase": "^2.110.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
