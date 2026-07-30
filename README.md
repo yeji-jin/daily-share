@@ -44,24 +44,28 @@ daily-share/
 │
 ├── components/
 │   ├── layout/                    # 헤더, 테마 토글 등 레이아웃 컴포넌트
-│   │   ├── header.tsx             # 서버에서 받은 session prop으로 로그인/비로그인 UI 분기
+│   │   ├── header.tsx             # 서버에서 받은 user prop으로 로그인/비로그인 UI 분기
 │   │   └── theme-toggle.tsx
-│   └── ui/                        # shadcn/ui 컴포넌트
+│   └── ui/                        # shadcn/ui 컴포넌트 + loading-dots.tsx(로딩 점 애니메이션)
 │
 ├── hooks/
-│   └── mutations/                 # TanStack Query mutation 훅
-│       ├── use-sign-in.ts
-│       ├── use-sign-in-with-oauth.ts
-│       ├── use-sign-up.ts
-│       ├── use-request-password-reset-email.ts
-│       └── use-update-password.ts
+│   ├── mutations/                 # TanStack Query mutation 훅
+│   │   ├── use-sign-in.ts
+│   │   ├── use-sign-in-with-oauth.ts
+│   │   ├── use-sign-up.ts
+│   │   ├── use-request-password-reset-email.ts
+│   │   └── use-update-password.ts
+│   └── queries/                   # TanStack Query query 훅
+│       └── use-profile-data.ts    # 프로필 조회, 없으면(PGRST116) 자동 생성
 │
 ├── lib/
 │   ├── auth.ts                    # Supabase Auth 함수 (signUp, signInWithPassword, signInWithOAuth,
 │   │                               #   requestPasswordResetEmail, updatePassword, signOut)
+│   ├── constants.ts                # QUERY_KEYS 등 공용 상수
 │   ├── error.ts                   # 에러 메시지 매핑 + showErrorToast 헬퍼
+│   ├── profile.ts                 # fetchProfile, createProfile (랜덤 닉네임 자동 생성)
 │   ├── site.ts                    # 사이트 메타 정보 (이름/설명/URL)
-│   ├── utils.ts
+│   ├── utils.ts                   # cn, getRandomNickname
 │   └── supabase/
 │       ├── client.ts              # 브라우저용 Supabase 클라이언트
 │       ├── server.ts              # 서버용 Supabase 클라이언트
@@ -70,7 +74,7 @@ daily-share/
 ├── providers/
 │   ├── query-provider.tsx         # TanStack Query Provider
 │   ├── theme-provider.tsx         # next-themes Provider
-│   └── SessionProvider.tsx        # 서버에서 받은 초기 user를 zustand 스토어에 시드 + 실시간 구독
+│   └── session-provider.tsx       # 서버에서 받은 초기 user를 zustand 스토어에 시드 + 실시간 구독
 │
 ├── stores/
 │   └── session.ts                 # 유저 zustand 스토어 (useUser, useIsUserLoaded, useSetUser)
@@ -80,7 +84,8 @@ daily-share/
 │   ├── auth.ts                    # 인증 관련 zod 스키마 + 타입 (emailSchema, passwordSchema,
 │   │                               #   signUpSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema)
 │   ├── mutations.ts               # 공용 mutation 콜백(onSuccess/onError 등) 타입
-│   └── post.ts                    # Post 도메인 타입
+│   ├── post.ts                    # Post 도메인 타입
+│   └── profile.ts                 # Profile 도메인 타입
 │
 └── public/
 ```

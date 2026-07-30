@@ -13,6 +13,7 @@ export default function SessionProvider({
   initialUser: User | null;
 }) {
   const [supabase] = useState(() => createClient());
+
   const setUser = useSetUser();
 
   useEffect(() => {

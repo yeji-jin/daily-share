@@ -6,7 +6,7 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { Header } from "@/components/layout/header";
 import { siteConfig } from "@/lib/site";
-import SessionProvider from "@/providers/SessionProvider";
+import SessionProvider from "@/providers/session-provider";
 import { createClient } from "@/lib/supabase/server";
 
 const geistSans = Geist({
