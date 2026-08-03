@@ -1,4 +1,4 @@
-import { signInWithOAuth } from "@/lib/auth";
+import { signInWithOAuth } from "@/lib/services/auth";
 import { UseMutationCallback } from "@/types/mutations";
 import { useMutation } from "@tanstack/react-query";
 

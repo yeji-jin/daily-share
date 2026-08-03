@@ -1,4 +1,4 @@
-import { requestPasswordResetEmail } from "@/lib/auth";
+import { requestPasswordResetEmail } from "@/lib/services/auth";
 import { UseMutationCallback } from "@/types/mutations";
 import { useMutation } from "@tanstack/react-query";
 

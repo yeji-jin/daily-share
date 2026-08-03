@@ -20,73 +20,29 @@ Share your daily moments with a modern social platform.
 
 ```
 daily-share/
-├── middleware.ts                  # 세션 쿠키 갱신 + 라우트 가드 (로그인/비로그인 접근 제어)
+├── app/                # Next.js App Router (페이지, 레이아웃, 라우트 핸들러)
+│   ├── (guest)/        # 비로그인 상태에서만 접근 가능한 라우트 그룹
+│   ├── (auth)/         # 로그인 상태에서만 접근 가능한 라우트 그룹
+│   └── auth/           # Supabase 인증 콜백 라우트
 │
-├── app/
-│   ├── (guest)/                   # 비로그인 상태에서만 접근 가능
-│   │   ├── layout.tsx
-│   │   ├── signin/                # 이메일/비밀번호 + GitHub OAuth 로그인, ?reset=success 안내 토스트
-│   │   ├── signup/                # React Hook Form + Zod 연동 예시
-│   │   └── forgot-password/       # 비밀번호 재설정 이메일 요청
-│   ├── (auth)/                    # 로그인 상태에서만 접근 가능
-│   │   ├── page.tsx               # 홈 피드 (/)
-│   │   ├── post/[id]/             # 게시글 상세 (/post/{id})
-│   │   ├── profile/[id]/          # 사용자 프로필 (/profile/{id})
-│   │   ├── settings/              # 설정 (/settings)
-│   │   └── reset-password/        # 비밀번호 재설정 (재설정 링크로 인증된 세션에서 접근)
-│   ├── auth/
-│   │   └── confirm/route.ts       # Supabase 재설정 링크의 code를 세션으로 교환하는 콜백
-│   ├── layout.tsx                 # 루트 레이아웃 (서버에서 getUser() 조회, Header/Provider 연결)
-│   ├── not-found.tsx              # 404 페이지
-│   ├── robots.ts                  # robots.txt 생성
-│   ├── sitemap.ts                 # sitemap.xml 생성
-│   └── globals.css
+├── components/         # UI 컴포넌트
+│   ├── layout/         # 헤더 등 전역 레이아웃 컴포넌트
+│   ├── modal/          # 모달 컴포넌트
+│   ├── post/           # 게시글 관련 컴포넌트
+│   └── ui/             # shadcn/ui 컴포넌트
 │
-├── components/
-│   ├── layout/                    # 헤더, 테마 토글 등 레이아웃 컴포넌트
-│   │   ├── header.tsx             # 서버에서 받은 user prop으로 로그인/비로그인 UI 분기
-│   │   └── theme-toggle.tsx
-│   └── ui/                        # shadcn/ui 컴포넌트 + loading-dots.tsx(로딩 점 애니메이션)
+├── hooks/              # TanStack Query 훅
+│   ├── mutations/      # 도메인별(auth/, post/) mutation 훅
+│   └── queries/        # query 훅
 │
-├── hooks/
-│   ├── mutations/                 # TanStack Query mutation 훅
-│   │   ├── use-sign-in.ts
-│   │   ├── use-sign-in-with-oauth.ts
-│   │   ├── use-sign-up.ts
-│   │   ├── use-request-password-reset-email.ts
-│   │   └── use-update-password.ts
-│   └── queries/                   # TanStack Query query 훅
-│       └── use-profile-data.ts    # 프로필 조회, 없으면(PGRST116) 자동 생성
+├── lib/                # 공용 유틸 + Supabase 관련 모듈
+│   ├── services/       # 도메인별 Supabase 데이터 접근 함수
+│   └── supabase/       # 브라우저/서버 Supabase 클라이언트 설정
 │
-├── lib/
-│   ├── auth.ts                    # Supabase Auth 함수 (signUp, signInWithPassword, signInWithOAuth,
-│   │                               #   requestPasswordResetEmail, updatePassword, signOut)
-│   ├── constants.ts                # QUERY_KEYS 등 공용 상수
-│   ├── error.ts                   # 에러 메시지 매핑 + showErrorToast 헬퍼
-│   ├── profile.ts                 # fetchProfile, createProfile (랜덤 닉네임 자동 생성)
-│   ├── site.ts                    # 사이트 메타 정보 (이름/설명/URL)
-│   ├── utils.ts                   # cn, getRandomNickname
-│   └── supabase/
-│       ├── client.ts              # 브라우저용 Supabase 클라이언트
-│       ├── server.ts              # 서버용 Supabase 클라이언트
-│       └── middleware.ts          # 세션 쿠키 갱신 + 라우트 가드 로직 (middleware.ts에서 사용)
-│
-├── providers/
-│   ├── query-provider.tsx         # TanStack Query Provider
-│   ├── theme-provider.tsx         # next-themes Provider
-│   └── session-provider.tsx       # 서버에서 받은 초기 user를 zustand 스토어에 시드 + 실시간 구독
-│
-├── stores/
-│   └── session.ts                 # 유저 zustand 스토어 (useUser, useIsUserLoaded, useSetUser)
-│
-├── types/
-│   ├── database.types.ts          # Supabase 자동생성 타입 (직접 수정 X, `npm run type-gen`으로 갱신)
-│   ├── auth.ts                    # 인증 관련 zod 스키마 + 타입 (emailSchema, passwordSchema,
-│   │                               #   signUpSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema)
-│   ├── mutations.ts               # 공용 mutation 콜백(onSuccess/onError 등) 타입
-│   ├── post.ts                    # Post 도메인 타입
-│   └── profile.ts                 # Profile 도메인 타입
-│
+├── providers/          # 전역 Provider (테마, 세션, 쿼리, 모달)
+├── stores/             # Zustand 스토어
+├── types/              # 공용 타입 + Supabase 자동생성 타입
+├── middleware.ts       # 세션 쿠키 갱신 + 라우트 가드
 └── public/
 ```
 

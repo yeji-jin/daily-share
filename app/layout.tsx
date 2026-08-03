@@ -8,6 +8,7 @@ import { Header } from "@/components/layout/header";
 import { siteConfig } from "@/lib/site";
 import SessionProvider from "@/providers/session-provider";
 import { createClient } from "@/lib/supabase/server";
+import ModalProvider from "@/providers/modal-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,11 +71,14 @@ export default async function RootLayout({
         >
           <SessionProvider initialUser={user}>
             <QueryProvider>
-              <Header user={user} />
-              <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col border-r border-l px-4 py-6">
-                {children}
-              </main>
-              <Toaster />
+              <ModalProvider>
+                <Header user={user} />
+                <main className="mx-auto flex w-full max-w-3xl flex-1 flex-col border-r border-l px-4 py-6">
+                  {children}
+                </main>
+                <Toaster />
+                <div id="modal-root" />
+              </ModalProvider>
             </QueryProvider>
           </SessionProvider>
         </ThemeProvider>

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { forgotPasswordSchema, type ForgotPasswordValues } from "@/types/auth";
-import { useRequestPasswordResetEmail } from "@/hooks/mutations/use-request-password-reset-email";
+import { useRequestPasswordResetEmail } from "@/hooks/mutations/auth/use-request-password-reset-email";
 import { toast } from "sonner";
 import { showErrorToast } from "@/lib/error";
 

@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import type { User } from "@supabase/supabase-js";
-import { createClient } from "@/lib/supabase/client";
+import { supabase } from "@/lib/supabase/client";
 import { useSetUser } from "@/stores/session";
 
 export default function SessionProvider({
@@ -12,8 +12,6 @@ export default function SessionProvider({
   children: React.ReactNode;
   initialUser: User | null;
 }) {
-  const [supabase] = useState(() => createClient());
-
   const setUser = useSetUser();
 
   useEffect(() => {
@@ -26,7 +24,7 @@ export default function SessionProvider({
     });
 
     return () => subscription.unsubscribe();
-  }, [setUser, supabase]);
+  }, [setUser]);
 
   return <>{children}</>;
 }

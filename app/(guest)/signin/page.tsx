@@ -17,8 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { loginSchema, type LoginValues } from "@/types/auth";
-import { useSignIn } from "@/hooks/mutations/use-sign-in";
-import { useSignInWithOAuth } from "@/hooks/mutations/use-sign-in-with-oauth";
+import { useSignIn } from "@/hooks/mutations/auth/use-sign-in";
+import { useSignInWithOAuth } from "@/hooks/mutations/auth/use-sign-in-with-oauth";
 import { showErrorToast } from "@/lib/error";
 
 function ResetSuccessNotice() {

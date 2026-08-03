@@ -13,10 +13,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { resetPasswordSchema, type ResetPasswordValues } from "@/types/auth";
-import { useUpdatePassword } from "@/hooks/mutations/use-update-password";
+import { useUpdatePassword } from "@/hooks/mutations/auth/use-update-password";
 import { useRouter } from "next/navigation";
 import { showErrorToast } from "@/lib/error";
-import { signOut } from "@/lib/auth";
+import { signOut } from "@/lib/services/auth";
 
 export default function ResetPasswordPage() {
   const router = useRouter();

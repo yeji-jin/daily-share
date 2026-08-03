@@ -15,7 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useSignUp } from "@/hooks/mutations/use-sign-up";
+import { useSignUp } from "@/hooks/mutations/auth/use-sign-up";
 import { signUpSchema, type SignUpValues } from "@/types/auth";
 import { showErrorToast } from "@/lib/error";
 

@@ -1,12 +1,11 @@
-import { signInWithPassword } from "@/lib/auth";
+import { signUp } from "@/lib/services/auth";
 import { UseMutationCallback } from "@/types/mutations";
 import { useMutation } from "@tanstack/react-query";
 
-export function useSignIn(callbacks?: UseMutationCallback) {
+export function useSignUp(callbacks?: UseMutationCallback) {
   return useMutation({
-    mutationFn: signInWithPassword,
+    mutationFn: signUp,
     onError: (error) => {
-      console.log(error);
       if (callbacks?.onError) callbacks.onError(error);
     },
     onSuccess: () => {

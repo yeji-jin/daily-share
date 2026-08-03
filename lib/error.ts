@@ -30,8 +30,8 @@ export function generateErrorMessage(error: unknown) {
   return "에러가 발생했습니다. 잠시 후 다시 시도해주세요";
 }
 
-export function showErrorToast(error: unknown) {
-  toast.error(generateErrorMessage(error), {
+export function showErrorToast(error: unknown, message?: string) {
+  toast.error(message ?? generateErrorMessage(error), {
     position: "top-center",
   });
 }

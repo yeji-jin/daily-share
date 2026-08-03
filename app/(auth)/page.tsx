@@ -3,6 +3,7 @@
 import { useUser } from "@/stores/session";
 import { useProfileData } from "@/hooks/queries/use-profile-data";
 import { LoadingDots } from "@/components/ui/loading-dots";
+import CreatePostButton from "@/components/post/create-post-button";
 
 export default function Home() {
   const user = useUser();
@@ -17,7 +18,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+    <div className="flex flex-1 flex-col items-center gap-10 bg-white font-sans dark:bg-black">
+      <CreatePostButton />
       <h2>root</h2>
       {profile && <p>{profile.nickname}</p>}
     </div>

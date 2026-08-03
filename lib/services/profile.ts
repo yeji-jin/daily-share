@@ -1,7 +1,5 @@
-import { createClient } from "@/lib/supabase/client";
-import { getRandomNickname } from "./utils";
-
-const supabase = createClient();
+import { supabase } from "@/lib/supabase/client";
+import { getRandomNickname } from "@/lib/utils";
 
 export async function fetchProfile(userId: string) {
   const { data, error } = await supabase

@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants";
-import { createProfile, fetchProfile } from "@/lib/profile";
+import { createProfile, fetchProfile } from "@/lib/services/profile";
 import { PostgrestError } from "@supabase/supabase-js";
 import { useUser } from "@/stores/session";
 
