@@ -1,15 +1,16 @@
 "use client";
 
-import { useUser } from "@/stores/session";
+import { useIsUserLoaded, useUser } from "@/stores/session";
 import { useProfileData } from "@/hooks/queries/use-profile-data";
 import { LoadingDots } from "@/components/ui/loading-dots";
 import CreatePostButton from "@/components/post/create-post-button";
 
 export default function Home() {
   const user = useUser();
+  const isUserLoaded = useIsUserLoaded();
   const { data: profile, isLoading } = useProfileData(user?.id);
 
-  if (isLoading) {
+  if (!isUserLoaded || isLoading) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center">
         <LoadingDots />
