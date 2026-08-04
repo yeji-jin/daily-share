@@ -7,6 +7,7 @@ import { useCreatePost } from "@/hooks/mutations/post/use-create-post";
 import { showErrorToast } from "@/lib/error";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { useIsUserLoaded, useUser } from "@/stores/session";
+import AlertModal from "@/components/modal/alert-modal";
 
 type Image = {
   file: File;
@@ -19,6 +20,7 @@ export default function PostEditorModal() {
   const { close } = useModal();
   const [content, setContent] = useState<string>("");
   const [images, setImages] = useState<Image[]>([]);
+  const [isConfirmCloseOpen, setIsConfirmCloseOpen] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imagesRef = useRef(images);
@@ -51,6 +53,21 @@ export default function PostEditorModal() {
     setImages((prevImages) => prevImages.filter((item) => item.previewUrl !== image.previewUrl));
   };
 
+  const handleCloseModal = (open: boolean) => {
+    if (open) return;
+
+    if (content !== "" || images.length !== 0) {
+      setIsConfirmCloseOpen(true);
+      return;
+    }
+
+    close();
+  };
+
+  const handleConfirmClose = () => {
+    close();
+  };
+
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.style.height = "auto";
@@ -69,7 +86,7 @@ export default function PostEditorModal() {
   }, []);
 
   return (
-    <Dialog open onOpenChange={(open) => !open && close()}>
+    <Dialog open onOpenChange={handleCloseModal}>
       {/* Dialog가 닫히려고 할 때(close 이벤트가 발생했을 때) Zustand의 close()도 호출 */}
       <DialogContent className="max-h-[80vh]">
         <DialogTitle>포스트 작성</DialogTitle>
@@ -133,6 +150,15 @@ export default function PostEditorModal() {
           </Button>
         </div>
       </DialogContent>
+      <AlertModal
+        open={isConfirmCloseOpen}
+        onOpenChange={setIsConfirmCloseOpen}
+        title="아직 작성 중인 내용이 있어요"
+        description="지금 닫으면 작성 중인 내용이 사라져요. 그래도 닫으시겠어요?"
+        cancelText="계속 작성"
+        confirmText="닫기"
+        onConfirm={handleConfirmClose}
+      />
     </Dialog>
   );
 }
