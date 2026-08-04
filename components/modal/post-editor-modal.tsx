@@ -8,6 +8,7 @@ import { showErrorToast } from "@/lib/error";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { useIsUserLoaded, useUser } from "@/stores/session";
 import AlertModal from "@/components/modal/alert-modal";
+import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
 
 type Image = {
   file: File;
@@ -20,7 +21,6 @@ export default function PostEditorModal() {
   const { close } = useModal();
   const [content, setContent] = useState<string>("");
   const [images, setImages] = useState<Image[]>([]);
-  const [isConfirmCloseOpen, setIsConfirmCloseOpen] = useState(false);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imagesRef = useRef(images);
@@ -53,19 +53,15 @@ export default function PostEditorModal() {
     setImages((prevImages) => prevImages.filter((item) => item.previewUrl !== image.previewUrl));
   };
 
+  const { isConfirmOpen, setIsConfirmOpen, requestClose, confirmDiscard } = useUnsavedChangesGuard(
+    {
+      hasUnsavedChanges: content !== "" || images.length !== 0,
+      onDiscard: close,
+    },
+  );
+
   const handleCloseModal = (open: boolean) => {
-    if (open) return;
-
-    if (content !== "" || images.length !== 0) {
-      setIsConfirmCloseOpen(true);
-      return;
-    }
-
-    close();
-  };
-
-  const handleConfirmClose = () => {
-    close();
+    if (!open) requestClose();
   };
 
   useEffect(() => {
@@ -151,13 +147,13 @@ export default function PostEditorModal() {
         </div>
       </DialogContent>
       <AlertModal
-        open={isConfirmCloseOpen}
-        onOpenChange={setIsConfirmCloseOpen}
+        open={isConfirmOpen}
+        onOpenChange={setIsConfirmOpen}
         title="아직 작성 중인 내용이 있어요"
         description="지금 닫으면 작성 중인 내용이 사라져요. 그래도 닫으시겠어요?"
         cancelText="계속 작성"
         confirmText="닫기"
-        onConfirm={handleConfirmClose}
+        onConfirm={confirmDiscard}
       />
     </Dialog>
   );
