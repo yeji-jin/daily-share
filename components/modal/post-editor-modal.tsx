@@ -53,12 +53,10 @@ export default function PostEditorModal() {
     setImages((prevImages) => prevImages.filter((item) => item.previewUrl !== image.previewUrl));
   };
 
-  const { isConfirmOpen, setIsConfirmOpen, requestClose, confirmDiscard } = useUnsavedChangesGuard(
-    {
-      hasUnsavedChanges: content !== "" || images.length !== 0,
-      onDiscard: close,
-    },
-  );
+  const { isConfirmOpen, setIsConfirmOpen, requestClose, confirmDiscard } = useUnsavedChangesGuard({
+    hasUnsavedChanges: content !== "" || images.length !== 0,
+    onDiscard: close,
+  });
 
   const handleCloseModal = (open: boolean) => {
     if (!open) requestClose();
