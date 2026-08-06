@@ -49,7 +49,7 @@ export default function PostItem(post: PostDetail) {
           <CarouselContent>
             {post.image_urls?.map((url, index) => (
               <CarouselItem className="basis-3/5" key={index}>
-                <div className="overflow-hidden rounded-xl">
+                <div className="overflow-hidden rounded-xl border shadow-sm">
                   <img src={url} alt="" className="h-full max-h-87.5 w-full object-cover" />
                 </div>
               </CarouselItem>

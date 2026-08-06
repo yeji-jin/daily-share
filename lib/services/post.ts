@@ -2,13 +2,14 @@ import { supabase } from "@/lib/supabase/client";
 import { uploadImage } from "./image";
 import { Post } from "@/types/post";
 
-export async function getPosts() {
+export async function getPosts({ from, to }: { from: number; to: number }) {
   const { data, error } = await supabase
     .from("post")
     .select("* , author: profile!author_id (*)")
     .order("created_at", {
       ascending: false,
-    });
+    })
+    .range(from, to);
 
   if (error) throw error;
   return data;

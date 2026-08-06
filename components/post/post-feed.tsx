@@ -1,13 +1,24 @@
-import { usePostsData } from "@/hooks/mutations/post/use-posts-data";
 import { LoadingDots } from "../ui/loading-dots";
 import PostItem from "./post-item";
+import { useInView } from "react-intersection-observer";
+import { useEffect } from "react";
+import { useInfinitePostsDate } from "@/hooks/queries/use-infinite-posts-data";
 
 export default function PostFeed() {
-  const { data: posts, isPending } = usePostsData();
+  const { data, isPending, fetchNextPage, isFetchingNextPage } = useInfinitePostsDate();
+  const { ref, inView } = useInView();
+
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [inView]);
 
   if (isPending) return <LoadingDots />;
 
-  if (!posts || posts.length === 0) {
+  const posts = data?.pages.flatMap((page) => page) ?? [];
+
+  if (posts.length === 0) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20 text-center">
         <p className="text-muted-foreground text-sm">
@@ -24,6 +35,8 @@ export default function PostFeed() {
       {posts.map((post) => (
         <PostItem key={post.id} {...post} />
       ))}
+      {isFetchingNextPage && <LoadingDots />}
+      <div ref={ref} />
     </div>
   );
 }
