@@ -15,10 +15,12 @@ export default function Home() {
   return (
     <div className="flex flex-1 flex-col items-center gap-10 bg-white font-sans dark:bg-black">
       {isProfileReady && (
-        <>
-          <p className="w-full text-lg font-bold">{profile.nickname}님 어서요세요! ☺️</p>
+        <div className="flex w-full flex-col gap-3">
+          <p className="w-full text-2xl font-bold tracking-tight">
+            <span className="text-primary">{profile.nickname}</span>님 어서요세요! ☺️
+          </p>
           <CreatePostButton />
-        </>
+        </div>
       )}
       <PostFeed />
     </div>
