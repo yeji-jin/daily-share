@@ -12,6 +12,7 @@ Share your daily moments with a modern social platform.
 - **State**: Zustand
 - **Data Fetching**: TanStack Query (react-query)
 - **Forms**: React Hook Form + Zod
+- **Date**: date-fns (상대 시간 표시 등)
 - **Theme**: next-themes (다크/라이트 모드)
 - **Icons**: lucide-react
 - **Toast**: Sonner
@@ -31,9 +32,10 @@ daily-share/
 │   ├── post/           # 게시글 관련 컴포넌트
 │   └── ui/             # shadcn/ui 컴포넌트
 │
-├── hooks/              # TanStack Query 훅
-│   ├── mutations/      # 도메인별(auth/, post/) mutation 훅
-│   └── queries/        # query 훅
+├── hooks/              # 커스텀 훅
+│   ├── mutations/      # 도메인별(auth/, post/) TanStack Query mutation 훅
+│   ├── queries/        # TanStack Query query 훅
+│   └── (그 외)          # react-query와 무관한 범용 UI 동작 훅 (예: use-unsaved-changes-guard)
 │
 ├── lib/                # 공용 유틸 + Supabase 관련 모듈
 │   ├── services/       # 도메인별 Supabase 데이터 접근 함수
