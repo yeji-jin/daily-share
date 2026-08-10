@@ -36,8 +36,8 @@ export default function AlertModal({
           {description && <AlertDialogDescription>{description}</AlertDialogDescription>}
         </AlertDialogHeader>
         <AlertDialogFooter className="flex">
-          <AlertDialogCancel className="h-10 flex-1">{cancelText}</AlertDialogCancel>
-          <AlertDialogAction className="h-10 flex-1" onClick={onConfirm}>
+          <AlertDialogCancel className="flex-1 py-4">{cancelText}</AlertDialogCancel>
+          <AlertDialogAction className="flex-1 py-4" onClick={onConfirm}>
             {confirmText}
           </AlertDialogAction>
         </AlertDialogFooter>

@@ -6,6 +6,7 @@ import { Post } from "@/types/post";
 import { Profile } from "@/types/profile";
 import { formatTimeAgo } from "@/lib/time";
 import { useModal } from "@/stores/modal";
+import { useUser } from "@/stores/session";
 
 type PostDetail = Post & {
   author: Profile;
@@ -13,6 +14,15 @@ type PostDetail = Post & {
 
 export default function PostItem(post: PostDetail) {
   const { open } = useModal();
+  const user = useUser();
+  const isMine = user?.id === post.author_id;
+
+  const handleEditPost = () => {
+    open("postEditor", { mode: "edit", postId: post.id });
+  };
+  const handleDeletePost = () => {
+    open("deletePostConfirm", { postId: post.id, userId: post.author_id });
+  };
 
   return (
     <div className="flex flex-col gap-4 border-b pb-8">
@@ -33,18 +43,16 @@ export default function PostItem(post: PostDetail) {
         </div>
 
         {/* edit, delete */}
-        <div className="text-muted-foreground flex text-sm">
-          <Button
-            onClick={() => open("postEditor", { mode: "edit", postId: post.id })}
-            className="cursor-pointer"
-            variant={"ghost"}
-          >
-            수정
-          </Button>
-          <Button className="cursor-pointer" variant={"ghost"}>
-            삭제
-          </Button>
-        </div>
+        {isMine && (
+          <div className="text-muted-foreground flex text-sm">
+            <Button onClick={handleEditPost} className="cursor-pointer" variant={"ghost"}>
+              수정
+            </Button>
+            <Button onClick={handleDeletePost} className="cursor-pointer" variant={"ghost"}>
+              삭제
+            </Button>
+          </div>
+        )}
       </div>
 
       {/* contents */}

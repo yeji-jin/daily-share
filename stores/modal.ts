@@ -12,7 +12,7 @@ import { combine, devtools } from "zustand/middleware";
  *
  * -> 모달이 늘어나도 store/provider를 새로 만들 필요 없이 이 파일 하나만 건드리면 됨.
  */
-export type ModalType = "postEditor"; // 새 모달 추가 시 여기 유니온에 키를 추가
+export type ModalType = "postEditor" | "deletePostConfirm"; // 새 모달 추가 시 여기 유니온에 키를 추가
 export type PostEditorMode = "create" | "edit";
 
 interface ModalState {

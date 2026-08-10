@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
-import { deleteImage, getImagePathFromUrl, uploadImage } from "./image";
+import { deleteImage, deleteImagesInFolder, getImagePathFromUrl, uploadImage } from "./image";
 import { Post } from "@/types/post";
 
 export async function getPosts({ from, to }: { from: number; to: number }) {
@@ -143,4 +143,16 @@ export async function deletePost(id: number) {
 
   if (error) throw error;
   return data;
+}
+
+export async function deletePostWithImages({ id, userId }: { id: number; userId: string }) {
+  const deletedPost = await deletePost(id);
+
+  try {
+    await deleteImagesInFolder(`${userId}/${id}`);
+  } catch (error) {
+    console.error("게시글 이미지 폴더 삭제 실패:", `${userId}/${id}`, error);
+  }
+
+  return deletedPost;
 }

@@ -3,6 +3,7 @@
 import { ComponentType, ReactNode, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import PostEditorModal from "@/components/modal/post-editor-modal";
+import DeletePostConfirmModal from "@/components/modal/delete-post-confirm-modal";
 import { ModalType, useModal } from "@/stores/modal";
 
 /**
@@ -12,6 +13,7 @@ import { ModalType, useModal } from "@/stores/modal";
  */
 const MODAL_COMPONENTS: Record<ModalType, ComponentType<any>> = {
   postEditor: PostEditorModal,
+  deletePostConfirm: DeletePostConfirmModal,
 };
 
 export default function ModalProvider({ children }: { children: ReactNode }) {
