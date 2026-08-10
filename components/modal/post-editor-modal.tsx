@@ -1,7 +1,7 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, XIcon } from "lucide-react";
-import { useModal } from "@/stores/modal";
+import { PostEditorMode, useModal } from "@/stores/modal";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useCreatePost } from "@/hooks/mutations/post/use-create-post";
 import { showErrorToast } from "@/lib/error";
@@ -9,22 +9,34 @@ import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { useIsUserLoaded, useUser } from "@/stores/session";
 import AlertModal from "@/components/modal/alert-modal";
 import { useUnsavedChangesGuard } from "@/hooks/use-unsaved-changes-guard";
+import { usePostData } from "@/hooks/queries/use-post-data";
+import { useUpdatePost } from "@/hooks/mutations/post/use-update-post";
 
-type Image = {
-  file: File;
-  previewUrl: string;
+type ImageItem =
+  { type: "existing"; url: string } | { type: "new"; file: File; previewUrl: string };
+
+type EditorMode = {
+  mode: PostEditorMode;
+  postId?: number;
 };
 
-export default function PostEditorModal() {
+const getImageUrl = (image: ImageItem) =>
+  image.type === "existing" ? image.url : image.previewUrl;
+
+export default function PostEditorModal({ mode, postId }: EditorMode) {
   const user = useUser();
   const isUserLoaded = useIsUserLoaded();
   const { close } = useModal();
   const [content, setContent] = useState<string>("");
-  const [images, setImages] = useState<Image[]>([]);
+  const [imageItems, setImageItems] = useState<ImageItem[]>([]);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const imagesRef = useRef(images);
-  imagesRef.current = images;
+  const imageItemsRef = useRef(imageItems);
+  imageItemsRef.current = imageItems;
+  // 수정 모드 진입 시점의 기존 이미지 url 목록. 저장 시 이 목록과 비교해 삭제된 이미지를 찾아낸다.
+  const originalImageUrlsRef = useRef<string[]>([]);
+
+  const { data: post } = usePostData(postId);
 
   const { mutate: createPost, isPending: isCreatePostPending } = useCreatePost({
     onSuccess: () => {
@@ -33,34 +45,17 @@ export default function PostEditorModal() {
     onError: (error) => showErrorToast(error, "포스트 생성에 실패했습니다"),
   });
 
-  const handleCreatePost = () => {
-    if (content.trim() === "" || !isUserLoaded) return;
-    createPost({ content, images: images.map((image) => image.file), userId: user!.id });
-  };
-
-  const handleSelectImages = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      files.forEach((file) => {
-        setImages((prev) => [...prev, { file, previewUrl: URL.createObjectURL(file) }]);
-      });
-    }
-    e.target.value = "";
-  };
-
-  const handleDeleteImage = (image: Image) => {
-    URL.revokeObjectURL(image.previewUrl);
-    setImages((prevImages) => prevImages.filter((item) => item.previewUrl !== image.previewUrl));
-  };
-
-  const { isConfirmOpen, setIsConfirmOpen, requestClose, confirmDiscard } = useUnsavedChangesGuard({
-    hasUnsavedChanges: content !== "" || images.length !== 0,
-    onDiscard: close,
+  const { mutate: updatePost, isPending: isUpdatePostPending } = useUpdatePost({
+    onSuccess: () => {
+      close();
+    },
+    onError: (error) => showErrorToast(error, "포스트 수정에 실패했습니다"),
   });
 
-  const handleCloseModal = (open: boolean) => {
-    if (!open) requestClose();
-  };
+  const { isConfirmOpen, setIsConfirmOpen, requestClose, confirmDiscard } = useUnsavedChangesGuard({
+    hasUnsavedChanges: content !== "" || imageItems.length !== 0,
+    onDiscard: close,
+  });
 
   useEffect(() => {
     if (textAreaRef.current) {
@@ -75,15 +70,76 @@ export default function PostEditorModal() {
 
   useEffect(() => {
     return () => {
-      imagesRef.current.forEach((image) => URL.revokeObjectURL(image.previewUrl));
+      imageItemsRef.current.forEach((item) => {
+        if (item.type === "new") URL.revokeObjectURL(item.previewUrl);
+      });
     };
   }, []);
+
+  useEffect(() => {
+    if (mode === "edit" && post) {
+      setContent(post.content);
+      const urls = post.image_urls ?? [];
+      setImageItems(urls.map((url) => ({ type: "existing", url })));
+      originalImageUrlsRef.current = urls;
+    }
+  }, [mode, post]);
+
+  const handleSavePostClick = () => {
+    if (content.trim() === "" || !isUserLoaded) return;
+
+    const newImages = imageItems.filter((item) => item.type === "new").map((item) => item.file);
+
+    if (mode === "create") {
+      createPost({ content, images: newImages, userId: user!.id });
+    } else {
+      // 기존 이미지 중, 삭제되지 않고 아직 남아있는 것
+      const keptImageUrls = imageItems
+        .filter((item) => item.type === "existing")
+        .map((item) => item.url);
+      // 기존 이미지 중, 사용자가 지운 것
+      const removedImageUrls = originalImageUrlsRef.current.filter(
+        (url) => !keptImageUrls.includes(url),
+      );
+
+      updatePost({
+        id: postId!,
+        content,
+        userId: user!.id,
+        newImages,
+        keptImageUrls,
+        removedImageUrls,
+      });
+    }
+  };
+
+  const handleSelectImages = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      files.forEach((file) => {
+        setImageItems((prev) => [
+          ...prev,
+          { type: "new", file, previewUrl: URL.createObjectURL(file) },
+        ]);
+      });
+    }
+    e.target.value = "";
+  };
+
+  const handleDeleteImage = (image: ImageItem) => {
+    if (image.type === "new") URL.revokeObjectURL(image.previewUrl);
+    setImageItems((prev) => prev.filter((item) => getImageUrl(item) !== getImageUrl(image)));
+  };
+
+  const handleCloseModal = (open: boolean) => {
+    if (!open) requestClose();
+  };
 
   return (
     <Dialog open onOpenChange={handleCloseModal}>
       {/* Dialog가 닫히려고 할 때(close 이벤트가 발생했을 때) Zustand의 close()도 호출 */}
       <DialogContent className="max-h-[80vh]">
-        <DialogTitle>포스트 작성</DialogTitle>
+        <DialogTitle>{mode === "edit" ? "포스트 수정" : "포스트 작성"}</DialogTitle>
         <textarea
           ref={textAreaRef}
           value={content}
@@ -100,14 +156,14 @@ export default function PostEditorModal() {
             multiple
             className="hidden"
           />
-          {images.length > 0 && (
+          {imageItems.length > 0 && (
             <Carousel>
               <CarouselContent>
-                {images.map((image) => (
-                  <CarouselItem key={image.previewUrl} className="basis-2/5">
+                {imageItems.map((image) => (
+                  <CarouselItem key={getImageUrl(image)} className="basis-2/5">
                     <div className="bg-muted-foreground relative h-24">
                       <img
-                        src={image.previewUrl}
+                        src={getImageUrl(image)}
                         alt=""
                         className="h-full w-full rounded-sm object-contain"
                       />
@@ -137,8 +193,8 @@ export default function PostEditorModal() {
           </Button>
           <Button
             className="cursor-pointer"
-            disabled={isCreatePostPending}
-            onClick={handleCreatePost}
+            disabled={isCreatePostPending || isUpdatePostPending}
+            onClick={handleSavePostClick}
           >
             저장
           </Button>

@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase/client";
-import { uploadImage } from "./image";
+import { deleteImage, getImagePathFromUrl, uploadImage } from "./image";
 import { Post } from "@/types/post";
 
 export async function getPosts({ from, to }: { from: number; to: number }) {
@@ -12,6 +12,14 @@ export async function getPosts({ from, to }: { from: number; to: number }) {
     .range(from, to);
 
   if (error) throw error;
+  return data;
+}
+
+export async function getPost(postId: number) {
+  const { data, error } = await supabase.from("post").select("*").eq("id", postId).single();
+
+  if (error) throw error;
+
   return data;
 }
 
@@ -80,6 +88,54 @@ export async function updatePost(post: Partial<Post> & { id: number }) {
 
   if (error) throw error;
   return data;
+}
+
+export async function updatePostWithImages({
+  id,
+  content,
+  userId,
+  newImages,
+  keptImageUrls,
+  removedImageUrls,
+}: {
+  id: number;
+  content: string;
+  userId: string;
+  newImages: File[];
+  keptImageUrls: string[];
+  removedImageUrls: string[];
+}) {
+  const uploadedUrls = await Promise.all(
+    newImages.map((image) => {
+      const fileExtension = image.name.split(".").pop() || "webp";
+      const fileName = `${Date.now()}-${crypto.randomUUID()}.${fileExtension}`;
+      const filePath = `${userId}/${id}/${fileName}`;
+
+      return uploadImage({ file: image, filePath });
+    }),
+  );
+
+  // DB를 먼저 업데이트해서 참조가 항상 유효한 이미지만 가리키게 한다.
+  // 이후 storage 삭제가 실패해도 orphan 파일만 남을 뿐 포스트 데이터는 안전하다.
+  const updatedPost = await updatePost({
+    id,
+    content,
+    image_urls: [...keptImageUrls, ...uploadedUrls],
+  });
+
+  await Promise.all(
+    removedImageUrls.map(async (url) => {
+      const filePath = getImagePathFromUrl(url);
+      if (!filePath) return;
+      try {
+        await deleteImage(filePath);
+      } catch (error) {
+        console.error("기존 이미지 삭제 실패:", filePath, error);
+      }
+    }),
+  );
+
+  return updatedPost;
 }
 
 export async function deletePost(id: number) {

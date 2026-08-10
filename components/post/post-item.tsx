@@ -5,12 +5,15 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import { Post } from "@/types/post";
 import { Profile } from "@/types/profile";
 import { formatTimeAgo } from "@/lib/time";
+import { useModal } from "@/stores/modal";
 
 type PostDetail = Post & {
   author: Profile;
 };
 
 export default function PostItem(post: PostDetail) {
+  const { open } = useModal();
+
   return (
     <div className="flex flex-col gap-4 border-b pb-8">
       <div className="flex justify-between">
@@ -31,7 +34,11 @@ export default function PostItem(post: PostDetail) {
 
         {/* edit, delete */}
         <div className="text-muted-foreground flex text-sm">
-          <Button className="cursor-pointer" variant={"ghost"}>
+          <Button
+            onClick={() => open("postEditor", { mode: "edit", postId: post.id })}
+            className="cursor-pointer"
+            variant={"ghost"}
+          >
             수정
           </Button>
           <Button className="cursor-pointer" variant={"ghost"}>
@@ -58,7 +65,7 @@ export default function PostItem(post: PostDetail) {
         </Carousel>
       </div>
 
-      {/* 3. buttons*/}
+      {/* buttons */}
       <div className="flex gap-2">
         {/* like button */}
         <div className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-4 text-sm">

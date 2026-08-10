@@ -6,7 +6,7 @@ export default function CreatePostButton() {
   return (
     <div
       className="bg-muted text-muted-foreground flex w-full cursor-pointer items-center justify-between rounded-xl px-6 py-4"
-      onClick={() => open("postEditor")}
+      onClick={() => open("postEditor", { mode: "create" })}
     >
       <p>나누고 싶은 이야기가 있나요?</p>
       <PlusCircleIcon className="size-5" />

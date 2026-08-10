@@ -1,20 +1,21 @@
-import { LoadingDots } from "../ui/loading-dots";
+import { LoadingDots, LoadingDotsFull } from "../ui/loading-dots";
 import PostItem from "./post-item";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import { useInfinitePostsDate } from "@/hooks/queries/use-infinite-posts-data";
 
 export default function PostFeed() {
-  const { data, isPending, fetchNextPage, isFetchingNextPage } = useInfinitePostsDate();
+  const { data, isPending, fetchNextPage, isFetchingNextPage, hasNextPage } =
+    useInfinitePostsDate();
   const { ref, inView } = useInView();
 
   useEffect(() => {
-    if (inView) {
+    if (inView && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
   }, [inView]);
 
-  if (isPending) return <LoadingDots />;
+  if (isPending) return <LoadingDotsFull />;
 
   const posts = data?.pages.flatMap((page) => page) ?? [];
 
