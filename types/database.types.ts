@@ -39,6 +39,35 @@ export type Database = {
   }
   public: {
     Tables: {
+      like: {
+        Row: {
+          created_at: string
+          id: number
+          post_id: number
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          post_id: number
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          post_id?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "like_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "post"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       post: {
         Row: {
           author_id: string
@@ -46,7 +75,7 @@ export type Database = {
           created_at: string
           id: number
           image_urls: string[] | null
-          like: number
+          like_count: number
         }
         Insert: {
           author_id?: string
@@ -54,7 +83,7 @@ export type Database = {
           created_at?: string
           id?: number
           image_urls?: string[] | null
-          like?: number
+          like_count?: number
         }
         Update: {
           author_id?: string
@@ -62,7 +91,7 @@ export type Database = {
           created_at?: string
           id?: number
           image_urls?: string[] | null
-          like?: number
+          like_count?: number
         }
         Relationships: [
           {
@@ -103,7 +132,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      toggle_post_like: {
+        Args: { p_post_id: number; p_user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

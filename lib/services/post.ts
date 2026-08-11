@@ -2,28 +2,36 @@ import { supabase } from "@/lib/supabase/client";
 import { deleteImage, deleteImagesInFolder, getImagePathFromUrl, uploadImage } from "./image";
 import { Post } from "@/types/post";
 
-export async function getPosts({ from, to }: { from: number; to: number }) {
+export async function getPosts({ from, to, userId }: { from: number; to: number; userId: string }) {
   const { data, error } = await supabase
     .from("post")
-    .select("* , author: profile!author_id (*)")
+    .select("* , author: profile!author_id (*), myLiked:like!post_id (*)")
+    .eq("like.user_id", userId)
     .order("created_at", {
       ascending: false,
     })
     .range(from, to);
 
   if (error) throw error;
-  return data;
+  return data.map((post) => ({
+    ...post,
+    isLiked: post.myLiked && post.myLiked.length > 0,
+  }));
 }
 
-export async function getPost(postId: number) {
+export async function getPost({ postId, userId }: { postId: number; userId: string }) {
   const { data, error } = await supabase
     .from("post")
-    .select("* , author: profile!author_id (*)")
+    .select("* , author: profile!author_id (*), myLiked:like!post_id (*)")
+    .eq("like.user_id", userId)
     .eq("id", postId)
     .single();
 
   if (error) throw error;
-  return data;
+  return {
+    ...data,
+    isLiked: data.myLiked && data.myLiked.length > 0,
+  };
 }
 
 export async function createPost(content: string) {
@@ -158,4 +166,14 @@ export async function deletePostWithImages({ id, userId }: { id: number; userId:
   }
 
   return deletedPost;
+}
+
+export async function togglePostLike({ postId, userId }: { postId: number; userId: string }) {
+  const { data, error } = await supabase.rpc("toggle_post_like", {
+    p_post_id: postId,
+    p_user_id: userId,
+  });
+
+  if (error) throw error;
+  return data;
 }

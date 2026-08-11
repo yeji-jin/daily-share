@@ -1,11 +1,13 @@
 import { QUERY_KEYS } from "@/lib/constants";
 import { getPosts } from "@/lib/services/post";
+import { useUser } from "@/stores/session";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 const PAGE_SIZE = 5;
 
 export function useInfinitePostsDate() {
   const queryClient = useQueryClient();
+  const user = useUser();
 
   return useInfiniteQuery({
     queryKey: QUERY_KEYS.post.list,
@@ -13,7 +15,7 @@ export function useInfinitePostsDate() {
       const from = pageParam * PAGE_SIZE;
       const to = from + PAGE_SIZE - 1;
 
-      const posts = await getPosts({ from, to });
+      const posts = await getPosts({ from, to, userId: user!.id });
       posts.forEach((post) => queryClient.setQueryData(QUERY_KEYS.post.byId(post.id), post));
       return posts.map((post) => post.id);
     },
@@ -23,5 +25,6 @@ export function useInfinitePostsDate() {
       return allPages.length;
     },
     staleTime: Infinity,
+    enabled: !!user,
   });
 }

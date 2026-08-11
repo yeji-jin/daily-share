@@ -1,4 +1,4 @@
-import { HeartIcon, MessageCircle } from "lucide-react";
+import { MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
@@ -6,6 +6,7 @@ import { usePostData } from "@/hooks/queries/use-post-data";
 import { formatTimeAgo } from "@/lib/time";
 import { useModal } from "@/stores/modal";
 import { useUser } from "@/stores/session";
+import LikePostButton from "./like-post-button";
 
 type PostItemProps = {
   postId: number;
@@ -80,11 +81,7 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
       {/* buttons */}
       <div className="flex gap-2">
         {/* like button */}
-        <div className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-4 text-sm">
-          <HeartIcon className="h-4 w-4" />
-          <span>{post.like}</span>
-        </div>
-
+        <LikePostButton id={post.id} likeCount={post.like_count} isLiked={post.isLiked} />
         {/* comment button */}
         <div className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-4 text-sm">
           <MessageCircle className="h-4 w-4" />
