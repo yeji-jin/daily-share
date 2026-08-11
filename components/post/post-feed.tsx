@@ -33,8 +33,8 @@ export default function PostFeed() {
 
   return (
     <div className="flex w-full flex-col gap-10">
-      {posts.map((post) => (
-        <PostItem key={post.id} {...post} />
+      {posts.map((postId) => (
+        <PostItem key={postId} postId={postId} />
       ))}
       {isFetchingNextPage && <LoadingDots />}
       <div ref={ref} />

@@ -16,10 +16,13 @@ export async function getPosts({ from, to }: { from: number; to: number }) {
 }
 
 export async function getPost(postId: number) {
-  const { data, error } = await supabase.from("post").select("*").eq("id", postId).single();
+  const { data, error } = await supabase
+    .from("post")
+    .select("* , author: profile!author_id (*)")
+    .eq("id", postId)
+    .single();
 
   if (error) throw error;
-
   return data;
 }
 
@@ -29,7 +32,7 @@ export async function createPost(content: string) {
     .insert({
       content,
     })
-    .select()
+    .select("* , author: profile!author_id (*)")
     .single();
 
   if (error) throw error;
@@ -83,7 +86,7 @@ export async function updatePost(post: Partial<Post> & { id: number }) {
     .from("post")
     .update(post)
     .eq("id", post.id)
-    .select()
+    .select("* , author: profile!author_id (*)")
     .single();
 
   if (error) throw error;

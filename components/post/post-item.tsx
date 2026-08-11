@@ -2,19 +2,23 @@ import { HeartIcon, MessageCircle } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { Post } from "@/types/post";
-import { Profile } from "@/types/profile";
+import { usePostData } from "@/hooks/queries/use-post-data";
 import { formatTimeAgo } from "@/lib/time";
 import { useModal } from "@/stores/modal";
 import { useUser } from "@/stores/session";
 
-type PostDetail = Post & {
-  author: Profile;
+type PostItemProps = {
+  postId: number;
+  type?: "FEED" | "DETAIL";
 };
 
-export default function PostItem(post: PostDetail) {
+export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
   const { open } = useModal();
   const user = useUser();
+  const { data: post } = usePostData({ postId, type });
+
+  if (!post) return null;
+
   const isMine = user?.id === post.author_id;
 
   const handleEditPost = () => {

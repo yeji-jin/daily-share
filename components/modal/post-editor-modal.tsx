@@ -36,7 +36,7 @@ export default function PostEditorModal({ mode, postId }: EditorMode) {
   // 수정 모드 진입 시점의 기존 이미지 url 목록. 저장 시 이 목록과 비교해 삭제된 이미지를 찾아낸다.
   const originalImageUrlsRef = useRef<string[]>([]);
 
-  const { data: post } = usePostData(postId);
+  const { data: post } = usePostData({ postId, type: "DETAIL" });
 
   const { mutate: createPost, isPending: isCreatePostPending } = useCreatePost({
     onSuccess: () => {

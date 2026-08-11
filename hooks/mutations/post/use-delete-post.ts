@@ -9,8 +9,8 @@ export function useDeletePost(callbacks?: UseMutationCallback) {
   return useMutation({
     mutationFn: deletePostWithImages,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.post.all });
       if (callbacks?.onSuccess) callbacks.onSuccess();
+      queryClient.resetQueries({ queryKey: QUERY_KEYS.post.list });
     },
     onError: (error) => {
       if (callbacks?.onError) callbacks.onError(error);

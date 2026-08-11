@@ -8,9 +8,9 @@ export function useUpdatePost(callbacks?: UseMutationCallback) {
 
   return useMutation({
     mutationFn: updatePostWithImages,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.post.all });
+    onSuccess: (updatedPost) => {
       if (callbacks?.onSuccess) callbacks.onSuccess();
+      queryClient.setQueryData(QUERY_KEYS.post.byId(updatedPost.id), updatedPost);
     },
     onError: (error) => {
       if (callbacks?.onError) callbacks.onError(error);
