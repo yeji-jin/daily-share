@@ -2,8 +2,18 @@ import { supabase } from "@/lib/supabase/client";
 import { deleteImage, deleteImagesInFolder, getImagePathFromUrl, uploadImage } from "./image";
 import { Post } from "@/types/post";
 
-export async function getPosts({ from, to, userId }: { from: number; to: number; userId: string }) {
-  const { data, error } = await supabase
+export async function getPosts({
+  from,
+  to,
+  userId,
+  authorId,
+}: {
+  from: number;
+  to: number;
+  userId: string;
+  authorId?: string;
+}) {
+  const request = supabase
     .from("post")
     .select("* , author: profile!author_id (*), myLiked:like!post_id (*)")
     .eq("like.user_id", userId)
@@ -11,6 +21,10 @@ export async function getPosts({ from, to, userId }: { from: number; to: number;
       ascending: false,
     })
     .range(from, to);
+
+  if (authorId) request.eq("author_id", authorId);
+
+  const { data, error } = await request;
 
   if (error) throw error;
   return data.map((post) => ({

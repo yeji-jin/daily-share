@@ -39,5 +39,10 @@ export async function updatePassword(password: string) {
 
 export async function signOut() {
   const { error } = await supabase.auth.signOut();
-  if (error) throw error;
+
+  if (error) {
+    await supabase.auth.signOut({
+      scope: "local",
+    });
+  }
 }

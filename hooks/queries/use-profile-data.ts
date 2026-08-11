@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { QUERY_KEYS } from "@/lib/constants";
 import { createProfile, fetchProfile } from "@/lib/services/profile";
-import { PostgrestError } from "@supabase/supabase-js";
 import { useUser } from "@/stores/session";
 
 export function useProfileData(userId?: string) {
@@ -11,15 +10,10 @@ export function useProfileData(userId?: string) {
   return useQuery({
     queryKey: QUERY_KEYS.profile.byId(userId!),
     queryFn: async () => {
-      try {
-        const profile = await fetchProfile(userId!);
-        return profile;
-      } catch (error) {
-        if (isMine && (error as PostgrestError).code === "PGRST116") {
-          return await createProfile(userId!);
-        }
-        throw error;
-      }
+      const profile = await fetchProfile(userId!);
+      if (profile) return profile;
+      if (isMine) return await createProfile(userId!);
+      throw new Error(`프로필을 찾을 수 없습니다: ${userId}`);
     },
     enabled: !!userId,
   });

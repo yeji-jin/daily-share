@@ -1,12 +1,13 @@
 import { MessageCircle } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { UserAvatar } from "@/components/profile/user-avatar";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { usePostData } from "@/hooks/queries/use-post-data";
 import { formatTimeAgo } from "@/lib/time";
 import { useModal } from "@/stores/modal";
 import { useUser } from "@/stores/session";
 import LikePostButton from "./like-post-button";
+import Link from "next/link";
 
 type PostItemProps = {
   postId: number;
@@ -34,13 +35,9 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
       <div className="flex justify-between">
         {/* user info */}
         <div className="flex items-start gap-4">
-          <Avatar size="lg">
-            <AvatarImage
-              src={post.author.avatar_url ?? undefined}
-              alt={`${post.author.nickname}의 프로필 이미지`}
-            />
-            <AvatarFallback>{post.author.nickname[0]?.toUpperCase()}</AvatarFallback>
-          </Avatar>
+          <Link href={`/profile/${post.author_id}`}>
+            <UserAvatar name={post.author.nickname} avatarUrl={post.author.avatar_url} size="lg" />
+          </Link>
           <div>
             <div className="font-bold hover:underline">{post.author.nickname}</div>
             <div className="text-muted-foreground text-sm">{formatTimeAgo(post.created_at)}</div>

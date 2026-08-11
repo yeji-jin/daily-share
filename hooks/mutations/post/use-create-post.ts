@@ -10,7 +10,7 @@ export function useCreatePost(callbacks?: UseMutationCallback) {
     mutationFn: createPostWithImages,
     onSuccess: () => {
       if (callbacks?.onSuccess) callbacks.onSuccess();
-      queryClient.resetQueries({ queryKey: QUERY_KEYS.post.list });
+      queryClient.resetQueries({ queryKey: QUERY_KEYS.post.all });
     },
     onError: (error) => {
       if (callbacks?.onError) callbacks.onError(error);

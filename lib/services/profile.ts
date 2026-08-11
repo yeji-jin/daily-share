@@ -6,7 +6,7 @@ export async function fetchProfile(userId: string) {
     .from("profile")
     .select("id, nickname, bio, avatar_url, created_at")
     .eq("id", userId)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
   return data;

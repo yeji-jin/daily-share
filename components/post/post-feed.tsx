@@ -1,12 +1,14 @@
+"use client";
+
 import { LoadingDots, LoadingDotsFull } from "../ui/loading-dots";
 import PostItem from "./post-item";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import { useInfinitePostsDate } from "@/hooks/queries/use-infinite-posts-data";
 
-export default function PostFeed() {
+export default function PostFeed({ authorId }: { authorId?: string }) {
   const { data, isPending, fetchNextPage, isFetchingNextPage, hasNextPage } =
-    useInfinitePostsDate();
+    useInfinitePostsDate(authorId);
   const { ref, inView } = useInView();
 
   useEffect(() => {
