@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import PostEditorModal from "@/components/modal/post-editor-modal";
 import DeletePostConfirmModal from "@/components/modal/delete-post-confirm-modal";
 import { ModalType, useModal } from "@/stores/modal";
+import ProfileEditorModal from "@/components/modal/profile-editor-modal";
 
 /**
  * 모달 레지스트리: "모달 키" -> "렌더링할 컴포넌트"
@@ -14,6 +15,7 @@ import { ModalType, useModal } from "@/stores/modal";
 const MODAL_COMPONENTS: Record<ModalType, ComponentType<any>> = {
   postEditor: PostEditorModal,
   deletePostConfirm: DeletePostConfirmModal,
+  profileEditor: ProfileEditorModal,
 };
 
 export default function ModalProvider({ children }: { children: ReactNode }) {
@@ -29,9 +31,7 @@ export default function ModalProvider({ children }: { children: ReactNode }) {
   return (
     <>
       {children}
-      {modalRoot &&
-        ActiveModal &&
-        createPortal(<ActiveModal {...props} />, modalRoot)}
+      {modalRoot && ActiveModal && createPortal(<ActiveModal {...props} />, modalRoot)}
     </>
   );
 }

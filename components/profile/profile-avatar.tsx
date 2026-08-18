@@ -1,13 +1,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-type UserAvatarProps = {
+type ProfileAvatarProps = {
   name?: string | null;
   avatarUrl?: string | null;
   size?: "default" | "sm" | "lg";
   className?: string;
 };
 
-export function UserAvatar({ name, avatarUrl, size, className }: UserAvatarProps) {
+export function ProfileAvatar({ name, avatarUrl, size, className }: ProfileAvatarProps) {
   return (
     <Avatar size={size} className={className}>
       {avatarUrl && <AvatarImage src={avatarUrl} alt={name ? `${name}의 프로필 이미지` : ""} />}

@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { UserAvatar } from "@/components/profile/user-avatar";
+import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import { usePostData } from "@/hooks/queries/use-post-data";
 import { formatTimeAgo } from "@/lib/time";
@@ -36,7 +36,7 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
         {/* user info */}
         <div className="flex items-start gap-4">
           <Link href={`/profile/${post.author_id}`}>
-            <UserAvatar name={post.author.nickname} avatarUrl={post.author.avatar_url} size="lg" />
+            <ProfileAvatar name={post.author.nickname} avatarUrl={post.author.avatar_url} size="lg" />
           </Link>
           <div>
             <div className="font-bold hover:underline">{post.author.nickname}</div>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { User } from "@supabase/supabase-js";
 
-import { UserAvatar } from "@/components/profile/user-avatar";
+import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -27,7 +27,7 @@ export function UserMenu({ user }: { user: User }) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <UserAvatar name={profile?.nickname} avatarUrl={profile?.avatar_url} className="size-8" />
+        <ProfileAvatar name={profile?.nickname} avatarUrl={profile?.avatar_url} className="size-8" />
         <span className="sr-only">사용자 메뉴 열기</span>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="font-bold **:data-[slot=dropdown-menu-item]:py-2">
