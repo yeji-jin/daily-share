@@ -2,7 +2,7 @@ import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
-import { usePostData } from "@/hooks/queries/use-post-data";
+import { usePostWithAuthor } from "@/hooks/queries/use-post-with-author";
 import { formatTimeAgo } from "@/lib/time";
 import { useModal } from "@/stores/modal";
 import { useUser } from "@/stores/session";
@@ -17,7 +17,7 @@ type PostItemProps = {
 export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
   const { open } = useModal();
   const user = useUser();
-  const { data: post } = usePostData({ postId, type });
+  const { post, author } = usePostWithAuthor({ postId, type });
 
   if (!post) return null;
 
@@ -36,10 +36,10 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
         {/* user info */}
         <div className="flex items-start gap-4">
           <Link href={`/profile/${post.author_id}`}>
-            <ProfileAvatar name={post.author.nickname} avatarUrl={post.author.avatar_url} size="lg" />
+            <ProfileAvatar name={author?.nickname} avatarUrl={author?.avatar_url} size="lg" />
           </Link>
           <div>
-            <div className="font-bold hover:underline">{post.author.nickname}</div>
+            <div className="font-bold hover:underline">{author?.nickname}</div>
             <div className="text-muted-foreground text-sm">{formatTimeAgo(post.created_at)}</div>
           </div>
         </div>

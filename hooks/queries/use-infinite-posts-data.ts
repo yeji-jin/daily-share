@@ -16,7 +16,10 @@ export function useInfinitePostsDate(authorId?: string) {
       const to = from + PAGE_SIZE - 1;
 
       const posts = await getPosts({ from, to, userId: user!.id, authorId });
-      posts.forEach((post) => queryClient.setQueryData(QUERY_KEYS.post.byId(post.id), post));
+      posts.forEach((post) => {
+        queryClient.setQueryData(QUERY_KEYS.post.byId(post.id), post);
+        queryClient.setQueryData(QUERY_KEYS.profile.byId(post.author.id), post.author);
+      });
       return posts.map((post) => post.id);
     },
     initialPageParam: 0,
