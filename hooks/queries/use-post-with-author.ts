@@ -8,8 +8,10 @@ export function usePostWithAuthor({
   postId?: number;
   type: "FEED" | "DETAIL";
 }) {
-  const { data: post } = usePostData({ postId, type });
-  const { data: author } = useProfileData(post?.author_id);
+  const { data: post, isPending: isPostPending } = usePostData({ postId, type });
+  const { data: author, isPending: isAuthorPending } = useProfileData(post?.author_id);
 
-  return { post, author };
+  const isPending = isPostPending || (!!post && isAuthorPending);
+
+  return { post, author, isPending };
 }

@@ -14,9 +14,9 @@ export function usePostData({ postId, type }: { postId?: number; type: "FEED" | 
         postId: postId!,
         userId: user!.id,
       });
-      queryClient.setQueryData(QUERY_KEYS.profile.byId(post.author.id), post.author);
+      if (post) queryClient.setQueryData(QUERY_KEYS.profile.byId(post.author.id), post.author);
       return post;
     },
-    enabled: type === "DETAIL" && !!postId,
+    enabled: type === "DETAIL" && postId !== undefined && !!user,
   });
 }

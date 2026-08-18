@@ -39,9 +39,11 @@ export async function getPost({ postId, userId }: { postId: number; userId: stri
     .select("* , author: profile!author_id (*), myLiked:like!post_id (*)")
     .eq("like.user_id", userId)
     .eq("id", postId)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
+  if (!data) return null;
+
   return {
     ...data,
     isLiked: data.myLiked && data.myLiked.length > 0,

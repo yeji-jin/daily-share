@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { Header } from "@/components/layout/header";
 import { siteConfig } from "@/lib/site";
 import SessionProvider from "@/providers/session-provider";
-import { createClient } from "@/lib/supabase/server";
+import { getCurrentUser } from "@/lib/supabase/server";
 import ModalProvider from "@/providers/modal-provider";
 
 const geistSans = Geist({
@@ -51,10 +51,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUser();
 
   return (
     <html
