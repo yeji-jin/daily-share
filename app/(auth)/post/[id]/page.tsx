@@ -11,9 +11,9 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
       <PostItem postId={postId} type="DETAIL" />
       <div className="flex flex-col gap-4">
         <p className="font-medium">댓글</p>
-        <CommentEditor />
+        <CommentEditor type="CREATE" postId={postId} />
       </div>
-      <CommentList />
+      <CommentList postId={postId} />
     </div>
   );
 }
