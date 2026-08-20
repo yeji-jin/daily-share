@@ -27,13 +27,15 @@ daily-share/
 │   └── auth/           # Supabase 인증 콜백 라우트
 │
 ├── components/         # UI 컴포넌트
+│   ├── comment/        # 댓글 관련 컴포넌트
 │   ├── layout/         # 헤더 등 전역 레이아웃 컴포넌트
 │   ├── modal/          # 모달 컴포넌트
 │   ├── post/           # 게시글 관련 컴포넌트
+│   ├── profile/        # 프로필 관련 컴포넌트
 │   └── ui/             # shadcn/ui 컴포넌트
 │
 ├── hooks/              # 커스텀 훅
-│   ├── mutations/      # 도메인별(auth/, post/) TanStack Query mutation 훅
+│   ├── mutations/      # 도메인별(auth/, comment/, post/, profile/) TanStack Query mutation 훅
 │   ├── queries/        # TanStack Query query 훅
 │   └── (그 외)          # react-query와 무관한 범용 UI 동작 훅 (예: use-unsaved-changes-guard)
 │

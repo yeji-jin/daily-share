@@ -1,11 +1,23 @@
 import { supabase } from "../supabase/client";
 
-export async function createComment({ postId, content }: { postId: number; content: string }) {
+export async function createComment({
+  postId,
+  content,
+  parentCommentId,
+  rootCommentId,
+}: {
+  postId: number;
+  content: string;
+  parentCommentId?: number;
+  rootCommentId?: number;
+}) {
   const { data, error } = await supabase
     .from("comment")
     .insert({
       post_id: postId,
       content: content,
+      parent_comment_id: parentCommentId,
+      root_comment_id: rootCommentId,
     })
     .select()
     .single();
@@ -20,7 +32,7 @@ export async function getComments(postId: number) {
     .select("*, author: profile!author_id (*)")
     .eq("post_id", postId)
     .order("created_at", {
-      ascending: false,
+      ascending: true,
     });
 
   if (error) throw error;

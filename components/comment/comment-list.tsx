@@ -7,6 +7,29 @@ import { useDeleteComment } from "@/hooks/mutations/comment/use-delete-comment";
 import { showErrorToast } from "@/lib/error";
 import AlertModal from "@/components/modal/alert-modal";
 import { LoadingDots } from "../ui/loading-dots";
+import { CommentInfo, NestedComment } from "@/types/comment";
+
+function toNestedComments(comments: CommentInfo[]): NestedComment[] {
+  const result: NestedComment[] = [];
+  comments.forEach((comment) => {
+    if (!comment.root_comment_id) {
+      result.push({ ...comment, children: [] });
+    } else {
+      const rootCommentIdx = result.findIndex((item) => item.id === comment.root_comment_id);
+      const parentComment = comments.find((item) => item.id === comment.parent_comment_id);
+
+      if (rootCommentIdx === -1) return;
+      if (!parentComment) return;
+
+      result[rootCommentIdx].children.push({
+        ...comment,
+        children: [],
+        parentComment,
+      });
+    }
+  });
+  return result;
+}
 
 export default function CommentList({ postId }: { postId: number }) {
   const { data: comments, isPending: isPendingComments } = useCommentsData(postId);
@@ -17,14 +40,14 @@ export default function CommentList({ postId }: { postId: number }) {
   });
 
   if (isPendingComments) return <LoadingDots />;
+  if (!comments || comments.length === 0)
+    return <p className="pt-10 text-center">등록된 댓글이 없습니다</p>;
+
+  const nestedComments = toNestedComments(comments);
   return (
-    <div className="flex flex-col gap-5">
-      {comments?.map((comment) => (
-        <CommentItem
-          key={comment.id}
-          {...comment}
-          onDeleteClick={() => setDeleteTargetId(comment.id)}
-        />
+    <div className="flex flex-col gap-5 divide-y">
+      {nestedComments?.map((comment) => (
+        <CommentItem key={comment.id} comment={comment} onDeleteClick={setDeleteTargetId} />
       ))}
       <AlertModal
         open={deleteTargetId !== null}

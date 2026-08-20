@@ -29,6 +29,7 @@ export default function CommentEditor(props: CommentMode) {
   const { mutate: createComment, isPending: isCreatePending } = useCreateComment({
     onSuccess: () => {
       reset();
+      if (props.type === "REPLY") props.onClose();
     },
     onError: (error) => showErrorToast(error),
   });
@@ -46,6 +47,13 @@ export default function CommentEditor(props: CommentMode) {
       createComment({
         postId: props.postId,
         content,
+      });
+    } else if (props.type === "REPLY") {
+      createComment({
+        postId: props.postId,
+        content,
+        parentCommentId: props.parentCommentId,
+        rootCommentId: props.rootCommentId,
       });
     } else {
       updateComment({
@@ -68,7 +76,7 @@ export default function CommentEditor(props: CommentMode) {
       {errors.content && <p>{errors.content.message}</p>}
 
       <div className="flex justify-end gap-2">
-        {props.type === "EDIT" && (
+        {(props.type === "EDIT" || props.type === "REPLY") && (
           <Button type="button" variant={"outline"} onClick={props.onClose} disabled={isPending}>
             취소
           </Button>
