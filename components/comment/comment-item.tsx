@@ -25,7 +25,7 @@ export default function CommentItem({ comment, onDeleteClick }: CommentItemProps
   return (
     <div className="flex flex-col gap-8 pb-5">
       <div className="flex items-start gap-4">
-        <Link href={""}>
+        <Link href={`/profile/${comment.author_id}`}>
           <div className="flex h-full flex-col">
             <ProfileAvatar name={comment.author.nickname} avatarUrl={comment.author.avatar_url} />
           </div>

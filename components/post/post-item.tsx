@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { LoadingDots } from "@/components/ui/loading-dots";
 import { usePostWithAuthor } from "@/hooks/queries/use-post-with-author";
 import { formatTimeAgo } from "@/lib/time";
@@ -21,6 +23,7 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
   const { open } = useModal();
   const user = useUser();
   const { post, author, isPending } = usePostWithAuthor({ postId, type });
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
 
   if (isPending) return <LoadingDots />;
   if (!post)
@@ -77,14 +80,35 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
           <CarouselContent>
             {post.image_urls?.map((url, index) => (
               <CarouselItem className="basis-3/5" key={index}>
-                <div className="overflow-hidden rounded-xl border shadow-sm">
-                  <img src={url} alt="" className="h-full max-h-87.5 w-full object-cover" />
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setSelectedImageIndex(index)}
+                  aria-label="이미지 크게 보기"
+                  className="block w-full cursor-zoom-in overflow-hidden rounded-xl border shadow-sm"
+                >
+                  <img src={url} alt="" className="h-full max-h-87.5 w-full object-contain" />
+                </button>
               </CarouselItem>
             ))}
           </CarouselContent>
         </Carousel>
       </div>
+
+      <Dialog
+        open={selectedImageIndex !== null}
+        onOpenChange={(open) => !open && setSelectedImageIndex(null)}
+      >
+        <DialogContent className="w-[70%] max-w-3xl border p-0 shadow-none">
+          <DialogTitle className="sr-only">이미지 크게 보기</DialogTitle>
+          {selectedImageIndex !== null && post.image_urls && (
+            <img
+              src={post.image_urls[selectedImageIndex]}
+              alt=""
+              className="max-h-[85vh] w-full rounded-xl object-contain"
+            />
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* buttons */}
       <div className="flex gap-2">

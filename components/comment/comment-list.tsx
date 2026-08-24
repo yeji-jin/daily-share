@@ -6,8 +6,21 @@ import { useCommentsData } from "@/hooks/mutations/comment/use-comments-data";
 import { useDeleteComment } from "@/hooks/mutations/comment/use-delete-comment";
 import { showErrorToast } from "@/lib/error";
 import AlertModal from "@/components/modal/alert-modal";
-import { LoadingDots } from "../ui/loading-dots";
+import { Skeleton } from "@/components/ui/skeleton";
 import { CommentInfo, NestedComment } from "@/types/comment";
+
+function CommentItemSkeleton() {
+  return (
+    <div className="flex items-start gap-4 pb-5">
+      <Skeleton className="size-8 shrink-0 rounded-full" />
+      <div className="flex w-full flex-col gap-2">
+        <Skeleton className="h-4 w-24" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-3 w-14" />
+      </div>
+    </div>
+  );
+}
 
 function toNestedComments(comments: CommentInfo[]): NestedComment[] {
   const result: NestedComment[] = [];
@@ -39,7 +52,14 @@ export default function CommentList({ postId }: { postId: number }) {
     onError: (error) => showErrorToast(error, "댓글을 삭제하지 못했습니다"),
   });
 
-  if (isPendingComments) return <LoadingDots />;
+  if (isPendingComments)
+    return (
+      <div className="flex flex-col gap-5 divide-y">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <CommentItemSkeleton key={i} />
+        ))}
+      </div>
+    );
   if (!comments || comments.length === 0)
     return <p className="pt-10 text-center">등록된 댓글이 없습니다</p>;
 

@@ -9,6 +9,7 @@ import { siteConfig } from "@/lib/site";
 import SessionProvider from "@/providers/session-provider";
 import { getCurrentUser } from "@/lib/supabase/server";
 import ModalProvider from "@/providers/modal-provider";
+import { THEME_VALUES } from "@/types/theme";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -63,6 +64,7 @@ export default async function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
+          themes={THEME_VALUES}
           enableSystem
           disableTransitionOnChange
         >
