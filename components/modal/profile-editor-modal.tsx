@@ -4,7 +4,6 @@ import { Controller, useForm } from "react-hook-form";
 import { useUser } from "@/stores/session";
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { useModal } from "@/stores/modal";
 import { useProfileData } from "@/hooks/queries/use-profile-data";
 import { LoadingDots } from "../ui/loading-dots";
 import { ProfileAvatar } from "../profile/profile-avatar";
@@ -22,13 +21,12 @@ type ProfileEditorValues = {
   } | null;
 };
 
-export default function ProfileEditorModal() {
+export default function ProfileEditorModal({ onClose }: { onClose: () => void }) {
   const user = useUser();
   const { data: profile, isPending: isFetchingProfilePending } = useProfileData(user?.id);
-  const { close } = useModal();
   const { mutate: updateProfile, isPending: isUpdateProfilePending } = useUpdateProfile({
     onSuccess: () => {
-      close();
+      onClose();
     },
     onError: (error) => showErrorToast(error),
   });
@@ -69,7 +67,7 @@ export default function ProfileEditorModal() {
     <Dialog
       open
       onOpenChange={(open) => {
-        if (!open) close();
+        if (!open) onClose();
       }}
     >
       <DialogContent className="flex flex-col gap-5">

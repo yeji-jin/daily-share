@@ -13,6 +13,12 @@ import { useModal } from "@/stores/modal";
 import { useUser } from "@/stores/session";
 import LikePostButton from "./like-post-button";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+
+const PostEditorModal = dynamic(() => import("@/components/modal/post-editor-modal"));
+const DeletePostConfirmModal = dynamic(
+  () => import("@/components/modal/delete-post-confirm-modal"),
+);
 
 type PostItemProps = {
   postId: number;
@@ -32,10 +38,10 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
   const isMine = user?.id === post.author_id;
 
   const handleEditPost = () => {
-    open("postEditor", { mode: "edit", postId: post.id });
+    open(PostEditorModal, { mode: "edit", postId: post.id });
   };
   const handleDeletePost = () => {
-    open("deletePostConfirm", { postId: post.id, userId: post.author_id, type });
+    open(DeletePostConfirmModal, { postId: post.id, userId: post.author_id, type });
   };
 
   return (

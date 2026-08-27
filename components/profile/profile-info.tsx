@@ -1,15 +1,18 @@
 "use client";
 
+import { useState } from "react";
 import { useProfileData } from "@/hooks/queries/use-profile-data";
 import { LoadingDotsFull } from "../ui/loading-dots";
 import { ProfileAvatar } from "./profile-avatar";
 import { useUser } from "@/stores/session";
 import { Button } from "../ui/button";
-import { useModal } from "@/stores/modal";
+import dynamic from "next/dynamic";
+
+const ProfileEditorModal = dynamic(() => import("@/components/modal/profile-editor-modal"));
 
 export default function ProfileInfo({ userId }: { userId: string }) {
   const user = useUser();
-  const { open } = useModal();
+  const [isEditorOpen, setIsEditorOpen] = useState(false);
   const { data: profile, isPending: isFetchingProfilePending } = useProfileData(userId);
 
   if (isFetchingProfilePending) return <LoadingDotsFull />;
@@ -28,12 +31,13 @@ export default function ProfileInfo({ userId }: { userId: string }) {
           size={"lg"}
           className="cursor-pointer"
           onClick={() => {
-            open("profileEditor");
+            setIsEditorOpen(true);
           }}
         >
           프로필 수정
         </Button>
       )}
+      {isEditorOpen && <ProfileEditorModal onClose={() => setIsEditorOpen(false)} />}
     </div>
   );
 }
