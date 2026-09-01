@@ -1,3 +1,5 @@
+"use client";
+
 import { useModal } from "@/stores/modal";
 import { PlusCircleIcon } from "lucide-react";
 import dynamic from "next/dynamic";

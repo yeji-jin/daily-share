@@ -1,3 +1,5 @@
+"use client";
+
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, XIcon } from "lucide-react";

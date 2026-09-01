@@ -1,3 +1,5 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import AlertModal from "@/components/modal/alert-modal";
 import { useDeletePost } from "@/hooks/mutations/post/use-delete-post";

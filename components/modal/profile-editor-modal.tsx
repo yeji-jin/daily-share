@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef } from "react";
 import { XIcon } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";

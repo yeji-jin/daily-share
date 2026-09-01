@@ -1,3 +1,5 @@
+"use client";
+
 import useTogglePostLike from "@/hooks/mutations/post/use-toggle-post-like";
 import { showErrorToast } from "@/lib/error";
 import { useUser } from "@/stores/session";
