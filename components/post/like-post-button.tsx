@@ -4,6 +4,7 @@ import useTogglePostLike from "@/hooks/mutations/post/use-toggle-post-like";
 import { showErrorToast } from "@/lib/error";
 import { useUser } from "@/stores/session";
 import { HeartIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 type LikeButtonProps = {
   id: number;
@@ -23,12 +24,9 @@ export default function LikePostButton({ id, likeCount, isLiked }: LikeButtonPro
   };
 
   return (
-    <div
-      onClick={handleLikeClick}
-      className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-4 text-sm"
-    >
+    <Button variant="outline" onClick={handleLikeClick} className="cursor-pointer">
       <HeartIcon className={`h-4 w-4 ${isLiked && "fill-foreground border-foreground"}`} />
       <span>{likeCount}</span>
-    </div>
+    </Button>
   );
 }

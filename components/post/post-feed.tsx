@@ -5,6 +5,7 @@ import PostItem from "./post-item";
 import { useInView } from "react-intersection-observer";
 import { useEffect } from "react";
 import { useInfinitePostsDate } from "@/hooks/queries/use-infinite-posts-data";
+import { Inbox } from "lucide-react";
 
 export default function PostFeed({ authorId }: { authorId?: string }) {
   const { data, isPending, fetchNextPage, isFetchingNextPage, hasNextPage } =
@@ -23,8 +24,9 @@ export default function PostFeed({ authorId }: { authorId?: string }) {
 
   if (posts.length === 0) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center gap-2 py-20 text-center">
-        <p className="text-muted-foreground text-sm">
+      <div className="text-muted-foreground flex flex-1 flex-col items-center justify-center gap-3 py-20 text-center">
+        <Inbox className="size-10" strokeWidth={1.5} />
+        <p className="text-sm">
           등록된 게시글이 없어요
           <br />
           게시글을 작성해보세요 😉

@@ -8,6 +8,7 @@ import { showErrorToast } from "@/lib/error";
 import AlertModal from "@/components/modal/alert-modal";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CommentInfo, NestedComment } from "@/types/comment";
+import { MessageCircle } from "lucide-react";
 
 function CommentItemSkeleton() {
   return (
@@ -61,7 +62,12 @@ export default function CommentList({ postId }: { postId: number }) {
       </div>
     );
   if (!comments || comments.length === 0)
-    return <p className="pt-10 text-center">등록된 댓글이 없습니다</p>;
+    return (
+      <div className="text-muted-foreground flex flex-col items-center gap-3 pt-10 text-center">
+        <MessageCircle className="size-10" strokeWidth={1.5} />
+        <p>등록된 댓글이 없습니다</p>
+      </div>
+    );
 
   const nestedComments = toNestedComments(comments);
   return (

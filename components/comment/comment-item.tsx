@@ -6,6 +6,7 @@ import { formatTimeAgo } from "@/lib/time";
 import { useUser } from "@/stores/session";
 import { useState } from "react";
 import CommentEditor from "./comment-editor";
+import { Badge } from "../ui/badge";
 
 type CommentItemProps = {
   comment: NestedComment;
@@ -33,11 +34,7 @@ export default function CommentItem({ comment, onDeleteClick }: CommentItemProps
         <div className="flex w-full flex-col gap-2">
           <div className="flex items-center gap-2">
             <div className="font-bold">{comment.author.nickname}</div>
-            {isMine && (
-              <span className="bg-muted-foreground text-muted rounded-xs px-1 py-0.5 text-sm font-bold">
-                작성자
-              </span>
-            )}
+            {isMine && <Badge variant="secondary">작성자</Badge>}
           </div>
           {isEditing ? (
             <CommentEditor
@@ -49,7 +46,7 @@ export default function CommentItem({ comment, onDeleteClick }: CommentItemProps
           ) : (
             <div>
               {isOverTwoLevels && (
-                <span className="pr-1 font-bold text-blue-500">
+                <span className="text-primary pr-1 font-bold">
                   @{comment.parentComment?.author.nickname}
                 </span>
               )}

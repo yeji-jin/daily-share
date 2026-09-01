@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MessageCircle } from "lucide-react";
+import { FileX, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel";
@@ -33,7 +33,12 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
 
   if (isPending) return <LoadingDots />;
   if (!post)
-    return <p className="text-muted-foreground py-10 text-center">게시글을 찾을 수 없어요</p>;
+    return (
+      <div className="text-muted-foreground flex flex-col items-center gap-3 py-10 text-center">
+        <FileX className="size-10" strokeWidth={1.5} />
+        <p>게시글을 찾을 수 없어요</p>
+      </div>
+    );
 
   const isMine = user?.id === post.author_id;
 
@@ -122,12 +127,12 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
         <LikePostButton id={post.id} likeCount={post.like_count} isLiked={post.isLiked} />
         {/* comment button */}
         {type === "FEED" && (
-          <Link href={`/post/${post.id}`}>
-            <div className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-4 text-sm">
+          <Button variant="outline" className="cursor-pointer" asChild>
+            <Link href={`/post/${post.id}`}>
               <MessageCircle className="h-4 w-4" />
               <span>{post.commentCount > 0 ? `댓글(${post.commentCount})` : "댓글 달기"}</span>
-            </div>
-          </Link>
+            </Link>
+          </Button>
         )}
       </div>
     </div>
