@@ -15,7 +15,9 @@ export async function getPosts({
 }) {
   const request = supabase
     .from("post")
-    .select("* , author: profile!author_id (*), myLiked:like!post_id (*)")
+    .select(
+      "* , author: profile!author_id (*), myLiked:like!post_id (*), commentCount:comment!post_id (count)",
+    )
     .eq("like.user_id", userId)
     .order("created_at", {
       ascending: false,
@@ -30,13 +32,16 @@ export async function getPosts({
   return data.map((post) => ({
     ...post,
     isLiked: post.myLiked && post.myLiked.length > 0,
+    commentCount: post.commentCount?.[0]?.count ?? 0,
   }));
 }
 
 export async function getPost({ postId, userId }: { postId: number; userId: string }) {
   const { data, error } = await supabase
     .from("post")
-    .select("* , author: profile!author_id (*), myLiked:like!post_id (*)")
+    .select(
+      "* , author: profile!author_id (*), myLiked:like!post_id (*), commentCount:comment!post_id (count)",
+    )
     .eq("like.user_id", userId)
     .eq("id", postId)
     .maybeSingle();
@@ -47,6 +52,7 @@ export async function getPost({ postId, userId }: { postId: number; userId: stri
   return {
     ...data,
     isLiked: data.myLiked && data.myLiked.length > 0,
+    commentCount: data.commentCount?.[0]?.count ?? 0,
   };
 }
 

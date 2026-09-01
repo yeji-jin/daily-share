@@ -125,7 +125,7 @@ export default function PostItem({ postId, type = "FEED" }: PostItemProps) {
           <Link href={`/post/${post.id}`}>
             <div className="hover:bg-muted flex cursor-pointer items-center gap-2 rounded-xl border p-2 px-4 text-sm">
               <MessageCircle className="h-4 w-4" />
-              <span>댓글 달기</span>
+              <span>{post.commentCount > 0 ? `댓글(${post.commentCount})` : "댓글 달기"}</span>
             </div>
           </Link>
         )}

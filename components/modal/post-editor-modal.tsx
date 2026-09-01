@@ -88,7 +88,13 @@ export default function PostEditorModal({ mode, postId }: EditorMode) {
   }, [mode, post]);
 
   const handleSavePostClick = () => {
-    if (content.trim() === "" || !isUserLoaded) return;
+    if (!isUserLoaded) return;
+
+    if (content.trim() === "") {
+      showErrorToast(undefined, "내용을 입력해주세요.");
+      textAreaRef.current?.focus();
+      return;
+    }
 
     const newImages = imageItems.filter((item) => item.type === "new").map((item) => item.file);
 
