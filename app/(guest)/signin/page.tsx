@@ -40,7 +40,7 @@ export default function SignInPage() {
   const router = useRouter();
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "", password: "" },
+    defaultValues: { email: "test@test.com", password: "123123" },
   });
 
   const { mutate: signIn, isPending: isSignInWithPasswordPending } = useSignIn({

@@ -4,6 +4,10 @@ Share your daily moments with a modern social platform.
 
 자유롭게 데일리 피드를 올리는 플랫폼
 
+## Live Demo
+
+[https://daily-share-gilt.vercel.app](https://daily-share-gilt.vercel.app)
+
 ## Tech Stack
 
 - **Framework**: Next.js 15 (App Router), React 19, TypeScript
